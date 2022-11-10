@@ -3,30 +3,61 @@ import { StyleSheet, ImageBackground,Text, View, Image,TextInput} from 'react-na
 import { Button} from 'react-native-elements';
 import {Formik} from 'formik';
 import * as yup from 'yup'
- import {styles} from '../../assets/css/style';
+import {styles} from '../../assets/css/style';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export  default function  Login ({ navigation , route}) {  
   
     const [erroCo, seterroCo ] = useState(false)
+    let pass ="1234";
+    let username= "test"
 
-    const connexion = (email , password , erroCo) => {
-      fetch('https://gestion.fred-dev.fr/api/login', {
+    
+    const getData = async () => {
+        try {
+        const value = await AsyncStorage.getItem('user')
+        console.log(value)
+        if(value !== null) {
+            // value previously stored
+        }
+        } catch(e) {
+        // error reading value
+        }
+    }
+  
+    const storeData = async (value) => {
+        try {
+          const jsonValue = JSON.stringify(value)
+          await AsyncStorage.setItem('user', jsonValue)
+        } catch (e) {
+          // saving error
+        }
+      }
+    const connexion = (username , password , erroCo) => {
+      fetch('http://20.61.4.60:4000/api/login', {
         method: 'POST',
         headers: { 'Accept': 'application/json','Content-Type': 'application/json',},
-        body: JSON.stringify({ email :  'email@email.fr' , password : 'password',})
+        body: JSON.stringify({    
+            "user": {     
+            "password": pass,    
+            "username":username   
+             } 
+        })
         }).then((response) => response.json())
         .then((responseData) => {
-          console.log(responseData)
-
-            if(responseData.access_token){
+            console.log(responseData.data)
+            if(responseData.data){
+                if(responseData.data.email){
               seterroCo(false);
-
-              navigation.navigate('Dashboard' , {
+              storeData(responseData.data)
+              navigation.navigate('Homescreen' , {
                 access_token :  responseData.access_token,
                 id_user : responseData.id_user,
               } 
               )
+            }
+
             }
           else {
             seterroCo(true);
@@ -38,15 +69,14 @@ export  default function  Login ({ navigation , route}) {
 
     const loginValidationSchema = yup.object().shape({
 
-      email: yup
+      username: yup
         .string()
-        // .email("Entrer un format de mail valide ")
-        // .required('Email obligatoire')
+        .required('username obligatoire')
         ,
       password: yup
         .string()
-        // .min(8, ({ min }) => `Votre mot de passe fait minimum ${min} caractères `)
-        // .required('Mot de passe obligatoire')
+        .min(1, ({ min }) => `Votre mot de passe fait minimum ${min} caractères `)
+         .required('Mot de passe obligatoire')
         ,
     }) 
     return (
@@ -69,8 +99,8 @@ export  default function  Login ({ navigation , route}) {
    
           <Formik
               validationSchema={loginValidationSchema}
-              initialValues={{ email: '', password: '' }}
-              onSubmit={values => connexion(values.email , values.password , erroCo )}
+              initialValues={{ username: '', password: '' }}
+              onSubmit={values => connexion(values.username , values.password , erroCo )}
             >
                {({
                 handleChange,
@@ -85,16 +115,16 @@ export  default function  Login ({ navigation , route}) {
 
               <View style = {{ width: '80%' , marginRight: "10%", marginLeft: "10%",}}  >
                   <TextInput
-                    name="email"
-                    placeholder="Email"
+                    name="username"
+                    placeholder="username"
                     style={styles.inputStyle}
-                    onChangeText={handleChange('email')}
-                    onBlur={handleBlur('email')}
-                    value={values.email}
-                    keyboardType="email-address"
+                    onChangeText={handleChange('username')}
+                    onBlur={handleBlur('username')}
+                    value={values.username}
+                    keyboardType="username-address"
                   />
-                   {(errors.email && touched.email) &&
-                  <Text style={styles.errorText}>{errors.email}</Text>
+                   {(errors.username && touched.username) &&
+                  <Text style={styles.errorText}>{errors.username}</Text>
                 }
 
                   <TextInput
@@ -119,10 +149,10 @@ export  default function  Login ({ navigation , route}) {
                     titleStyle={{color: 'black'}}
                   />
                                 {erroCo &&
-                  <Text style={styles.erroCoStyle}>Mot de passe ou Email éronnée </Text>
+                  <Text style={styles.erroCoStyle}>Mot de passe ou username éronnée </Text>
                 } 
                   <Button
-                    // onPress= {() =>navigation.navigate('MdpOublie')}
+                    onPress= {getData}
                     title="Mot de passe oublier "
                     buttonStyle={{backgroundColor: 'white',borderWidth: 2,borderColor: 'white',borderRadius: 30, color:'black'}}
                     containerStyle={{color:'black',width:'80%',marginHorizontal: 50,marginTop: '10%', marginRight: "10%", marginLeft: "10%"}}

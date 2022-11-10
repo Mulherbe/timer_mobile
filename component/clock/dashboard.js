@@ -4,10 +4,10 @@ import {styles} from '../../assets/css/style';
 import { Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export  default function  Homescreen ({ navigation , route}) {
+export  default function Dashboard ({ navigation , route}) {
 
 
-    const getData = async () => {
+    const getData = async () => { 
         try {
         const value = await AsyncStorage.getItem('user')
         if(value !== null) {

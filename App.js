@@ -6,6 +6,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Login from './component/user/login';
 import Register from './component/user/register';
 import Homescreen from './component/user/homescreen';
+import Dashboard from './component/clock/dashboard';
 
  const Stack = createStackNavigator();
 
@@ -16,20 +17,25 @@ export default function App() {
       screenOptions={{
         headerTransparent: true,
         headerTitle: "",}}>
-                  <Stack.Screen
+
+        <Stack.Screen
           name="Homescreen"
           component={Homescreen}
           options={{ headerBackTitleVisible: false, headerTintColor: '#9025E8',}}
           />
-                <Stack.Screen
+        <Stack.Screen
             name="Login"
             component={Login}
             options={{ headerBackTitleVisible: false, headerTintColor: '#9025E8',}}
           />
-
         <Stack.Screen
           name="Register"
           component={Register}
+          options={{ headerBackTitleVisible: false, headerTintColor: '#9025E8',}}
+          />
+        <Stack.Screen
+          name="Dashboard"
+          component={Dashboard}
           options={{ headerBackTitleVisible: false, headerTintColor: '#9025E8',}}
           />
   </Stack.Navigator>
