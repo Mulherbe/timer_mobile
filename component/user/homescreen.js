@@ -7,20 +7,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export  default function  Homescreen ({ navigation , route}) {
 
 
-    const getData = async () => {
-        try {
-        const value = await AsyncStorage.getItem('user')
-        if(value !== null) {
-            navigation.navigate('Dashboard')
-        }
-        } catch(e) {
-        // error reading value
-        }
-    }
+    // const getData = async () => {
+    //     try {
+    //     const value = await AsyncStorage.getItem('user')
+    //     if(value !== null) {
+    //         navigation.navigate('Dashboard')
+    //     }
+    //     } catch(e) {
+    //     // error reading value
+    //     }
+    // }
 
-    useEffect(() => {
-        getData();
-    }, []);
+    // useEffect(() => {
+    //     getData();
+    // }, []);
 
     return (
     <View >

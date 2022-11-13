@@ -46,14 +46,19 @@ export  default function  Login ({ navigation , route}) {
         })
         }).then((response) => response.json())
         .then((responseData) => {
+          navigation.navigate('Dashboard' , {
+            id_user :1,
+          } 
+          )
             console.log(responseData.data)
+            
             if(responseData.data){
                 if(responseData.data.email){
               seterroCo(false);
               storeData(responseData.data)
-              navigation.navigate('Homescreen' , {
+              navigation.navigate('Dashboard' , {
                 access_token :  responseData.access_token,
-                id_user : responseData.id_user,
+                id_user : responseData.data.id,
               } 
               )
             }
@@ -69,15 +74,15 @@ export  default function  Login ({ navigation , route}) {
 
     const loginValidationSchema = yup.object().shape({
 
-      username: yup
-        .string()
-        .required('username obligatoire')
-        ,
-      password: yup
-        .string()
-        .min(1, ({ min }) => `Votre mot de passe fait minimum ${min} caractères `)
-         .required('Mot de passe obligatoire')
-        ,
+      // username: yup
+      //   .string()
+      //   .required('username obligatoire')
+      //   ,
+      // password: yup
+      //   .string()
+      //   .min(1, ({ min }) => `Votre mot de passe fait minimum ${min} caractères `)
+      //    .required('Mot de passe obligatoire')
+      //   ,
     }) 
     return (
       
